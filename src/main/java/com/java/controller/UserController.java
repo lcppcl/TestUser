@@ -27,10 +27,10 @@ public class UserController {
 	@RequestMapping("/login")
 	public String login(User user, HttpServletRequest request) {
 		User userList = userService.login(user);
-		user.setStatus("在线");
-		user.setLastLoginTime(new Date());
+		userList.setStatus("在线");
+		userList.setLastLoginTime(new Date());
 		System.out.println(user + "///////////////////");
-		userService.update(user);
+		userService.update(userList);
 		System.out.println(userList);
 		return "index";
 	}
@@ -71,10 +71,17 @@ public class UserController {
 		int flag = userService.deleteById(id);
 		return "redirect:/user/showAll.do";
 	}
-	
-	//修改用户信息
-	@RequestMapping("updateMessage")
-	public String updateMessage(User user,HttpServletRequest request, HttpServletResponse response) throws Exception{
+
+	// 修改用户信息
+	@RequestMapping("/updateMessage")
+	public String updateMessage(User user, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		Integer number = user.getNumber();
+		User user2 = new User();
+		user2.setNumber(number);
+		User currentUser = userService.isExist(user2);
+		user.setCreateTime(currentUser.getCreateTime());
+		user.setLastLoginTime(currentUser.getLastLoginTime());
 		int flag = userService.updateMessage(user);
 		StringBuffer result = new StringBuffer();
 		if (flag == 1) {
@@ -87,4 +94,17 @@ public class UserController {
 		return "redirect:/user/showAll.do";
 	}
 
+	// 查找单个信息
+	@RequestMapping("/findByNumber")
+	public String findByNumber(
+			@RequestParam(value = "number", required = false) Integer number,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		User user = new User();
+		user.setNumber(number);
+		User currentUser = userService.isExist(user);
+		System.out.println(currentUser.toString());
+		request.setAttribute("currentUser", currentUser);
+		return "forward:/jsp/modifyUser.jsp";
+	}
 }

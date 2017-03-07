@@ -25,4 +25,6 @@ public interface UserDao {
 	
 	//更新用户
 	public int updateMessage(User user);
+	
+	
 }

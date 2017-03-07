@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<#import "/spring.ftl" as spring />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -20,39 +20,45 @@
 </head>
 
 <body>
-	${userList }
-	<table id="table_id_example" class="display">
-		<thead>
-			<tr>
-				<th>编码</th>
-				<th>姓名</th>
-				<th>备注</th>
-				<th>状态</th>
-				<th>帐号类型</th>
-				<th>创建时间</th>
-				<th>最后登录时间</th>
-				<th>操作</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<#if userList?? && (userList?size > 0)>
-							<#list userList as user >
-									<td>${user.number }</td>
-									<td>${user.name }</td>
-									<td>${user.password }</td>
-									<td>${user.remark }</td>
-									<td>${user.status }</td>
-									<td>${user.createTime }</td>
-									<td>${user.lastLoginTime }</td>
-									<td>${user.type }</td>
-									<td><a href="#">删除</a><a href="#">修改</a></td>
-							</#list>		
-				<#eles>
-					数据为空
-				</#if>
-						
-							
-	</table>
+	<div>
+
+		<table id="table_id_example" class="display">
+			<thead>
+				<tr>
+					<th>编码</th>
+					<th>姓名</th>
+					<th>密码</th>
+					<th>备注</th>
+					<th>状态</th>
+					<th>帐号类型</th>
+					<th>创建时间</th>
+					<th>最后登录时间</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:choose>
+					<c:when test="${userList != null}">
+						<c:forEach var="user" items="${userList}">
+							<tr>
+
+								<td>${user.number }</td>
+								<td>${user.name }</td>
+								<td>${user.password }</td>
+								<td>${user.remark }</td>
+								<td>${user.status }</td>
+								<td>${user.createTime }</td>
+								<td>${user.lastLoginTime }</td>
+								<td>${user.type }</td>
+								<td><a href="${pageContext.request.contextPath }/user/deleteById.do?id=${user.id}">删除</a><a href="${pageContext.request.contextPath }/user/findByNumber.do?number=${user.number}">修改</a></td>
+							</tr>
+						</c:forEach>
+					</c:when>
+					<c:otherwise>没有数据
+					</c:otherwise>
+				</c:choose>
+			</tbody>
+		</table>
+	</div>
 </body>
 </html>

@@ -79,7 +79,7 @@ public class UserDaoImpl implements UserDao {
 	// 根据id删除
 	@Override
 	public int deleteById(int id) {
-		String sql = "delete t_user where id=:id";
+		String sql = "delete from t_user where id=:id";
 		Map map = new HashMap();
 		map.put("id", id);
 		return namedParameterJdbcTemplate.update(sql, map);
@@ -88,9 +88,10 @@ public class UserDaoImpl implements UserDao {
 	// 更新用户详细信息
 	@Override
 	public int updateMessage(User user) {
-		String sql = "update t_user set number=:number,name=:number,password=:password,remark=:remark,type=:type where id=:id";
+		String sql = "update t_user set name=:name,password=:password,remark=:remark,type=:type where id=:id";
 		SqlParameterSource ps = new BeanPropertySqlParameterSource(user);
 		return namedParameterJdbcTemplate.update(sql, ps);
 	}
+
 
 }
