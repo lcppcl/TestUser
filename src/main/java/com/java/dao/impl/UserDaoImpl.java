@@ -33,8 +33,13 @@ public class UserDaoImpl implements UserDao {
 	public User login(User user) {
 		String sql = "select * from t_user where number=:number and password=:password";
 		SqlParameterSource ps = new BeanPropertySqlParameterSource(user);
-		return (User) namedParameterJdbcTemplate.queryForObject(sql, ps,
-				new BeanPropertyRowMapper(User.class));
+		try {
+			return (User) namedParameterJdbcTemplate.queryForObject(sql, ps,
+					new BeanPropertyRowMapper(User.class));
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+
 	}
 
 	// 用户登录时更改登录时间和状态
@@ -78,10 +83,10 @@ public class UserDaoImpl implements UserDao {
 
 	// 根据id删除
 	@Override
-	public int deleteById(int id) {
-		String sql = "delete from t_user where id=:id";
+	public int deleteByNumber(int number) {
+		String sql = "delete from t_user where number=:number";
 		Map map = new HashMap();
-		map.put("id", id);
+		map.put("number", number);
 		return namedParameterJdbcTemplate.update(sql, map);
 	}
 
@@ -92,6 +97,5 @@ public class UserDaoImpl implements UserDao {
 		SqlParameterSource ps = new BeanPropertySqlParameterSource(user);
 		return namedParameterJdbcTemplate.update(sql, ps);
 	}
-
 
 }

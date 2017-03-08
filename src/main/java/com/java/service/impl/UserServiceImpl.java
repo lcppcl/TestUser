@@ -45,9 +45,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public int deleteById(int id) {
+	public int deleteByNumber(int number) {
 		// TODO Auto-generated method stub
-		return userDao.deleteById(id);
+		return userDao.deleteByNumber(number);
 	}
 
 	@Override

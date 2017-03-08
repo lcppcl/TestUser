@@ -26,13 +26,20 @@ public class UserController {
 	// 登录
 	@RequestMapping("/login")
 	public String login(User user, HttpServletRequest request) {
+		System.out.println(user);
 		User userList = userService.login(user);
-		userList.setStatus("在线");
-		userList.setLastLoginTime(new Date());
-		System.out.println(user + "///////////////////");
-		userService.update(userList);
-		System.out.println(userList);
-		return "index";
+		if (userList != null && userList.getType().equals("管理员")) {
+			System.out.println(user);
+			userList.setStatus("在线");
+			userList.setLastLoginTime(new Date());
+			userService.update(userList);
+			request.getSession().setAttribute("userAdmin", userList);
+			return "index";
+		} else {
+			request.setAttribute("errorInfo", "用户名或者密码错误！或没有权限");
+			return "login";
+		}
+
 	}
 
 	// 添加
@@ -40,7 +47,8 @@ public class UserController {
 	public String addUser(User user, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		user.setStatus("离线");
-		user.setLastLoginTime(new Date(0, 0, 0, 0, 0, 0));
+		user.setCreateTime(new Date());
+		user.setLastLoginTime(null);
 		User flag = userService.isExist(user);
 		StringBuffer result = new StringBuffer();
 		if (flag == null) {
@@ -63,13 +71,24 @@ public class UserController {
 	}
 
 	// 根据id删除
-	@RequestMapping("/deleteById")
-	public String deleteById(
-			@RequestParam(value = "id", required = false) int id,
+	@RequestMapping("/deleteByNumber")
+	public String deleteByNumber(
+			@RequestParam(value = "number", required = false) int number,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		int flag = userService.deleteById(id);
-		return "redirect:/user/showAll.do";
+		User user = (User) request.getSession().getAttribute("userAdmin");
+		User user2 = new User();
+		user2.setNumber(number);
+		User user3 = userService.isExist(user2);
+		if (user.getNumber() != number && !user3.getStatus().equals("在线")) {
+			int flag = userService.deleteByNumber(number);
+			request.setAttribute("errorInfo", "删除成功");
+			return "forward:/user/showAll.do";
+		} else {
+			request.setAttribute("errorInfo", "不能删除，登录中");
+			return "forward:/user/showAll.do";
+		}
+
 	}
 
 	// 修改用户信息
@@ -85,10 +104,9 @@ public class UserController {
 		int flag = userService.updateMessage(user);
 		StringBuffer result = new StringBuffer();
 		if (flag == 1) {
-			userService.add(user);
-			result.append("<script language='javascript'>alert('更新成功！');</script>");
+			result.append("<script language='javascript'>alert('修改成功！');</script>");
 		} else {
-			result.append("<script language='javascript'>alert('更新失败！');</script>");
+			result.append("<script language='javascript'>alert('修改失败！');</script>");
 		}
 		ResponseUtil.write(response, result);
 		return "redirect:/user/showAll.do";
@@ -103,7 +121,6 @@ public class UserController {
 		User user = new User();
 		user.setNumber(number);
 		User currentUser = userService.isExist(user);
-		System.out.println(currentUser.toString());
 		request.setAttribute("currentUser", currentUser);
 		return "forward:/jsp/modifyUser.jsp";
 	}

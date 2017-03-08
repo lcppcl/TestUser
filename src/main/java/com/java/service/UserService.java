@@ -21,7 +21,7 @@ public interface UserService {
 	public List<User> showAll();
 	
 	//根据id删除
-	public int deleteById(int id);
+	public int deleteByNumber(int number);
 	
 	//更新用户
 	public int updateMessage(User user);

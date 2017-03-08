@@ -31,9 +31,51 @@
 			startDate : moment().subtract(6, 'days')
 		})
 	});
-	/* 	$(document).ready(function() {
-	 $('#datetimepicker').daterangepicker('update')
-	 }); */
+	function checkForm() {
+		var number = $("#number").val();
+		var name = $("#name").val();
+		var password = $("#password").val();
+		var remark = $("#remark").val();
+		var createTime = $("#datetimepicker").val();
+		var type = $("#sel_recommender").val();
+		if (number == null || number == "") {
+			$("#error").html("帐号不能为空！");
+			return false;
+		}
+		if (name == null || name == "") {
+			$("#error").html("姓名不能为空！");
+			return false;
+		}
+		if (remark == null || remark == "") {
+			$("#error").html("标注不能为空！");
+			return false;
+		}
+		if (password == null || password == "") {
+			$("#error").html("密码不能为空！");
+			return false;
+		}
+		if (type == null || type == "") {
+			$("#error").html("类型不能为空！");
+			return false;
+		}
+		var create = new Date(createTime.replace(/-/g, "/"));
+		var year = create.getFullYear();
+		var month = create.getMonth();
+		var day = create.getDate()
+		
+		var flag = year+month+day;
+		var curDate = new Date();
+		var year1 = curDate.getFullYear();
+		var month1 = curDate.getMonth();
+		var day1 = curDate.getDate()
+		var flag1 = year1+month1+day1;
+		if (flag != flag1) {
+			alert("请选择今天的时间！");
+			document.getElementById("datetimepicker").focus();
+			return false;
+		}
+		return true;
+	}
 </script>
 <body>
 	<h1>添加用户</h1>
@@ -42,7 +84,7 @@
 			<div class="span12">
 				<form class="form-horizontal"
 					action="${pageContext.request.contextPath}/user/addUser.do"
-					method="post">
+					method="post" onsubmit="return checkForm()">
 					<div class="control-group">
 						<label class="control-label" for="number">编码</label>
 						<div class="controls">
@@ -59,7 +101,7 @@
 					<div class="control-group">
 						<label class="control-label" for="password">密码</label>
 						<div class="controls">
-							<input id="password" type="password" value="${user.password }"
+							<input id="password" type="text" value="${user.password }"
 								name="password" />
 						</div>
 					</div>
@@ -73,8 +115,8 @@
 					<div class="control-group">
 						<label class="control-label" for="type">注册时间</label>
 						<div>
-							<input type="text" value="2012-05-15 21:05" id="datetimepicker"
-								data-date-format="yyyy-mm-dd hh:ii" name="createTime">
+							<input type="text" value="2012-05-15" id="datetimepicker"
+								data-date-format="yyyy-mm-dd" name="createTime">
 						</div>
 					</div>
 					<div class="control-group">
@@ -83,8 +125,8 @@
 							<select class="combox" id="sel_recommender" name="type">
 								<option value="">请选择...</option>
 								<optgroup>
-									<option value="老师">老师</option>
-									<option value="学生">学生</option>
+									<option value="老师" id="type">老师</option>
+									<option value="学生" id="type">学生</option>
 								</optgroup>
 							</select>
 						</div>
@@ -96,6 +138,7 @@
 						</div>
 					</div>
 				</form>
+				<span><font color="red" id="error">${errorInfo }</font></span>
 			</div>
 		</div>
 	</div>

@@ -47,10 +47,28 @@
 								<td>${user.password }</td>
 								<td>${user.remark }</td>
 								<td>${user.status }</td>
-								<td>${user.createTime }</td>
-								<td>${user.lastLoginTime }</td>
 								<td>${user.type }</td>
-								<td><a href="${pageContext.request.contextPath }/user/deleteById.do?id=${user.id}">删除</a><a href="${pageContext.request.contextPath }/user/findByNumber.do?number=${user.number}">修改</a></td>
+								<td>${user.createTime }</td>
+								<c:choose>
+									<c:when test="${user.lastLoginTime != null}">
+										<td>${user.lastLoginTime }</td>
+									</c:when>
+									<c:otherwise>
+										<td>还未登录过</td>
+									</c:otherwise>
+								</c:choose>
+								<c:choose>
+									<c:when test="${user.type == '管理员'}">
+										<td>无法操</td>
+									</c:when>
+									<c:otherwise>
+										<td><a
+											href="${pageContext.request.contextPath }/user/deleteByNumber.do?number=${user.number}">删除</a>
+											<a
+											href="${pageContext.request.contextPath }/user/findByNumber.do?number=${user.number}">修改</a>
+										</td>
+									</c:otherwise>
+								</c:choose>
 							</tr>
 						</c:forEach>
 					</c:when>
@@ -59,6 +77,7 @@
 				</c:choose>
 			</tbody>
 		</table>
+		<span><font color="red" id="error">${errorInfo }</font></span>
 	</div>
 </body>
 </html>

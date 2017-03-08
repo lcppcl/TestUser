@@ -31,9 +31,29 @@
 			startDate : moment().subtract(6, 'days')
 		})
 	});
-	/* 	$(document).ready(function() {
-	 $('#datetimepicker').daterangepicker('update')
-	 }); */
+	function checkForm() {
+		var name = $("#name").val();
+		var password = $("#password").val();
+		var remark = $("#remark").val();
+		var type = $("#sel_recommender").val();
+
+		if (name == null || name == "") {
+			$("#error").html("姓名不能为空！");
+			return false;
+		}
+		if (remark == null || remark == "") {
+			$("#error").html("标注不能为空！");
+			return false;
+		}
+		if (password == null || password == "") {
+			$("#error").html("密码不能为空！");
+			return false;
+		}
+		if (type == null || type == "") {
+			$("#error").html("类型不能为空！");
+			return false;
+		}
+	}
 </script>
 <body>
 	<h1>添加用户</h1>
@@ -42,18 +62,19 @@
 			<div class="span12">
 				<form class="form-horizontal"
 					action="${pageContext.request.contextPath}/user/updateMessage.do"
-					method="post">
+					method="post" onsubmit="return checkForm()">
 					<div class="control-group">
 						<label class="control-label" for="number">编码</label>
 						<div class="controls">
 							<input id="number" type="text" value="${currentUser.number }"
-								name="number" readonly/>
+								name="number" readonly />
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="name">姓名</label>
 						<div class="controls">
-							<input id="name" type="text" value="${currentUser.name }" name="name" />
+							<input id="name" type="text" value="${currentUser.name }"
+								name="name" />
 						</div>
 					</div>
 					<div class="control-group">
@@ -64,8 +85,10 @@
 						</div>
 					</div>
 					<div>
-						<input type="text" value="${currentUser.id }" name="id" style="display:none"/>		
-						<input type="text" value="${currentUser.status }" name="status" style="display:none"/>		
+						<input type="text" value="${currentUser.id }" name="id"
+							style="display: none" /> <input type="text"
+							value="${currentUser.status }" name="status"
+							style="display: none" />
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="remark">备注</label>
@@ -93,6 +116,7 @@
 						</div>
 					</div>
 				</form>
+				<span><font color="red" id="error">${errorInfo }</font></span>
 			</div>
 		</div>
 	</div>
